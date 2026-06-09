@@ -1,0 +1,6 @@
+set(__QT_DEPLOY_TARGET_QtCiDemo_FILE C:/dev/qt-ci-demo/build/Release/QtCiDemo.exe)
+set(__QT_DEPLOY_TARGET_QtCiDemo_TYPE EXECUTABLE)
+set(__QT_DEPLOY_TARGET_QtCiDemo_RUNTIME_DLLS C:/Qt/6.11.1/msvc2022_64/bin/Qt6Widgets.dll;C:/Qt/6.11.1/msvc2022_64/bin/Qt6Gui.dll;C:/Qt/6.11.1/msvc2022_64/bin/Qt6Core.dll)
+set(__QT_DEPLOY_TARGET_UnitTests_FILE C:/dev/qt-ci-demo/build/Release/UnitTests.exe)
+set(__QT_DEPLOY_TARGET_UnitTests_TYPE EXECUTABLE)
+set(__QT_DEPLOY_TARGET_UnitTests_RUNTIME_DLLS C:/Qt/6.11.1/msvc2022_64/bin/Qt6Test.dll;C:/Qt/6.11.1/msvc2022_64/bin/Qt6Core.dll)

@@ -1,0 +1,5 @@
+C:/dev/qt-ci-demo/build/CMakeFiles/QtCiDemo.dir
+C:/dev/qt-ci-demo/build/CMakeFiles/UnitTests.dir
+C:/dev/qt-ci-demo/build/CMakeFiles/RUN_TESTS.dir
+C:/dev/qt-ci-demo/build/CMakeFiles/ALL_BUILD.dir
+C:/dev/qt-ci-demo/build/CMakeFiles/ZERO_CHECK.dir
