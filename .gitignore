@@ -1,0 +1,50 @@
+# ── Build output (CMake / Ninja) ─────────────────────────────────
+build/
+out/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+*.cmake.stamp
+Testing/
+
+# ── Test results / reports ───────────────────────────────────────
+results/
+*.xml.bak
+coverage/
+*.gcda
+*.gcno
+*.gcov
+lcov.info
+
+# ── Qt-generated files ───────────────────────────────────────────
+# moc/uic/rcc artifacts and Qt Creator user settings
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+*.moc
+*.user
+*.autosave
+
+# ── Compiled objects / binaries / libraries ──────────────────────
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.exe
+QtCiDemo
+UnitTests
+
+# ── Editor / IDE ─────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+.cache/
+
+# ── OS cruft ─────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
