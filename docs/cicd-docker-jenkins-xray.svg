@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="600" viewBox="0 0 1100 600" role="img" aria-label="CI/CD connections between Docker, Jenkins and Xray">
+  <title>CI/CD connections — Docker, Jenkins, Xray</title>
+  <desc>Developer pushes to Git, which triggers Jenkins. Jenkins builds and runs the project inside Docker (pulling a pinned base image from a registry); ctest produces JUnit XML. Jenkins publishes the JUnit for trends and imports it to Xray in Jira over REST, where results link to test issues and requirements for traceability.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#5f5e5a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text { font-family: 'Helvetica Neue', Arial, sans-serif; }
+      .h1 { font-size: 22px; font-weight: 600; fill: #262624; }
+      .sub { font-size: 13px; fill: #5f5e5a; }
+      .bt { font-size: 13px; font-weight: 600; }
+      .bs { font-size: 10.5px; }
+      .chip { font-size: 10px; fill: #0C447C; }
+      .el { font-size: 11px; fill: #444441; }
+      .elb { font-size: 11px; font-weight: 600; fill: #333; }
+      .conn { stroke: #5f5e5a; stroke-width: 1.5; fill: none; }
+      .note { font-size: 12px; fill: #5f5e5a; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1100" height="600" fill="#FFFFFF"/>
+
+  <text class="h1" x="40" y="38">CI/CD connections — Docker · Jenkins · Xray</text>
+  <text class="sub" x="40" y="61">JUnit XML is produced once (ctest) and consumed twice: by Jenkins (trend &amp; gate) and by Xray (requirement traceability).</text>
+
+  <!-- ===== Developer ===== -->
+  <rect x="40" y="150" width="150" height="70" rx="8" fill="#EEF1F4" stroke="#6b7280"/>
+  <text class="bt" x="115" y="182" text-anchor="middle" fill="#374151">Developer</text>
+  <text class="bs" x="115" y="200" text-anchor="middle" fill="#6b7280">commits &amp; pushes</text>
+
+  <!-- ===== Git ===== -->
+  <rect x="250" y="150" width="160" height="70" rx="8" fill="#E1F5EE" stroke="#0F6E56"/>
+  <text class="bt" x="330" y="182" text-anchor="middle" fill="#04342C">Git repository</text>
+  <text class="bs" x="330" y="200" text-anchor="middle" fill="#0F6E56">SCM (GitHub / GitLab…)</text>
+
+  <!-- ===== Jenkins ===== -->
+  <rect x="470" y="110" width="238" height="172" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
+  <text class="bt" x="589" y="132" text-anchor="middle" fill="#0C447C">Jenkins pipeline</text>
+  <rect x="486" y="144" width="206" height="26" rx="5" fill="#FFFFFF" stroke="#185FA5"/>
+  <text class="chip" x="496" y="161">① Checkout SCM</text>
+  <rect x="486" y="176" width="206" height="26" rx="5" fill="#FFFFFF" stroke="#185FA5"/>
+  <text class="chip" x="496" y="193">② Build image (docker build)</text>
+  <rect x="486" y="208" width="206" height="26" rx="5" fill="#FFFFFF" stroke="#185FA5"/>
+  <text class="chip" x="496" y="225">③ Run tests (unit → integration)</text>
+  <rect x="486" y="240" width="206" height="26" rx="5" fill="#FFFFFF" stroke="#185FA5"/>
+  <text class="chip" x="496" y="257">④ Publish JUnit + import to Xray</text>
+
+  <!-- ===== Docker engine ===== -->
+  <rect x="440" y="350" width="300" height="150" rx="10" fill="#E8F1FA" stroke="#1D6FB8" stroke-width="2"/>
+  <text class="bt" x="590" y="374" text-anchor="middle" fill="#0C447C">Docker engine</text>
+  <rect x="456" y="386" width="268" height="46" rx="6" fill="#FFFFFF" stroke="#1D6FB8"/>
+  <text class="elb" x="590" y="404" text-anchor="middle">docker build → image</text>
+  <text class="bs" x="590" y="421" text-anchor="middle" fill="#1D6FB8">pinned base + fetch GoogleTest</text>
+  <rect x="456" y="440" width="268" height="48" rx="6" fill="#FFFFFF" stroke="#1D6FB8"/>
+  <text class="elb" x="590" y="459" text-anchor="middle">docker run → container</text>
+  <text class="bs" x="590" y="476" text-anchor="middle" fill="#1D6FB8">ctest → JUnit XML (unit.xml, integration.xml)</text>
+
+  <!-- ===== Registry ===== -->
+  <rect x="120" y="380" width="180" height="80" rx="8" fill="#F1EFE8" stroke="#888780"/>
+  <text class="bt" x="210" y="412" text-anchor="middle" fill="#444441">Container registry</text>
+  <text class="bs" x="210" y="430" text-anchor="middle" fill="#666">pinned base image (digest)</text>
+
+  <!-- ===== Jira + Xray ===== -->
+  <rect x="820" y="110" width="250" height="390" rx="10" fill="#EEEDFE" stroke="#534AB7" stroke-width="2"/>
+  <text class="bt" x="945" y="132" text-anchor="middle" fill="#26215C">Jira + Xray</text>
+
+  <rect x="838" y="146" width="214" height="54" rx="7" fill="#FFFFFF" stroke="#534AB7"/>
+  <text class="elb" x="945" y="167" text-anchor="middle" fill="#26215C">Xray</text>
+  <text class="bs" x="945" y="184" text-anchor="middle" fill="#534AB7">test management (in Jira)</text>
+
+  <rect x="838" y="222" width="214" height="54" rx="7" fill="#F4F3FE" stroke="#534AB7"/>
+  <text class="elb" x="945" y="243" text-anchor="middle" fill="#26215C">Test Execution</text>
+  <text class="bs" x="945" y="260" text-anchor="middle" fill="#534AB7">imported run results</text>
+
+  <rect x="838" y="298" width="214" height="54" rx="7" fill="#F4F3FE" stroke="#534AB7"/>
+  <text class="elb" x="945" y="319" text-anchor="middle" fill="#26215C">Test issues</text>
+  <text class="bs" x="945" y="336" text-anchor="middle" fill="#534AB7">unit / integration cases</text>
+
+  <rect x="838" y="374" width="214" height="54" rx="7" fill="#F4F3FE" stroke="#534AB7"/>
+  <text class="elb" x="945" y="395" text-anchor="middle" fill="#26215C">Requirements / stories</text>
+  <text class="bs" x="945" y="412" text-anchor="middle" fill="#534AB7">⑥ coverage &amp; traceability</text>
+
+  <!-- internal traceability arrows -->
+  <line class="conn" x1="945" y1="200" x2="945" y2="222" marker-end="url(#arrow)"/>
+  <line class="conn" x1="945" y1="276" x2="945" y2="298" marker-end="url(#arrow)"/>
+  <line class="conn" x1="945" y1="352" x2="945" y2="374" marker-end="url(#arrow)"/>
+
+  <!-- ===== main-flow edges ===== -->
+  <!-- Dev -> Git -->
+  <line class="conn" x1="190" y1="185" x2="248" y2="185" marker-end="url(#arrow)"/>
+  <text class="el" x="219" y="176" text-anchor="middle">① git push</text>
+  <!-- Git -> Jenkins -->
+  <line class="conn" x1="410" y1="185" x2="468" y2="185" marker-end="url(#arrow)"/>
+  <text class="el" x="439" y="176" text-anchor="middle">② webhook</text>
+  <!-- Jenkins -> Docker (build/run) -->
+  <line class="conn" x1="520" y1="282" x2="520" y2="348" marker-end="url(#arrow)"/>
+  <text class="el" x="356" y="322" text-anchor="start">③ docker build &amp; run (socket)</text>
+  <!-- Docker -> Jenkins (JUnit back) -->
+  <line class="conn" x1="640" y1="348" x2="640" y2="282" marker-end="url(#arrow)"/>
+  <rect x="650" y="306" width="86" height="20" rx="5" fill="#FAEEDA" stroke="#854F0B"/>
+  <text x="693" y="320" text-anchor="middle" font-size="10" font-weight="700" fill="#412402">④ JUnit XML</text>
+  <!-- Registry -> Docker -->
+  <line class="conn" x1="300" y1="410" x2="438" y2="410" stroke-dasharray="5 3" marker-end="url(#arrow)"/>
+  <text class="bs" x="369" y="402" text-anchor="middle" fill="#666">pull base image</text>
+  <!-- Jenkins -> Xray (import) -->
+  <line class="conn" x1="708" y1="253" x2="836" y2="240" marker-end="url(#arrow)"/>
+  <text class="el" x="770" y="230" text-anchor="middle">⑤ import → Xray</text>
+  <text class="bs" x="770" y="244" text-anchor="middle" fill="#5f5e5a">(REST API + token)</text>
+
+  <!-- ===== bottom notes ===== -->
+  <text class="note" x="40" y="540">Flow:  ① push → ② trigger → ③ build &amp; run in Docker → ④ JUnit XML back → ⑤ import to Xray → ⑥ requirement traceability in Jira.</text>
+  <text class="note" x="40" y="562">The registry supplies the pinned base image. The same JUnit XML feeds both Jenkins (build trend &amp; gate) and Xray (test coverage).</text>
+</svg>

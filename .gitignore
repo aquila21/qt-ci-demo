@@ -1,33 +1,62 @@
-### C++ ###
-# Prerequisites
-*.d
+# ── Build output (CMake / Ninja) ─────────────────────────────────
+build/
+out/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+*.cmake.stamp
+Testing/
+_deps/                 # FetchContent downloads (GoogleTest) when built in-source
+compile_commands.json  # generated; regenerate per-machine
 
-# Compiled Object files
-*.slo
-*.lo
+# ── Test results / reports ───────────────────────────────────────
+results/
+tests.xml
+unit.xml
+integration.xml
+test_*.xml
+*.xml.bak
+coverage/
+*.gcda
+*.gcno
+*.gcov
+lcov.info
+
+# ── Qt-generated files ───────────────────────────────────────────
+# moc/uic/rcc artifacts and Qt Creator user settings
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+*.moc
+*.user
+*.autosave
+.qmake.stash
+
+# ── Compiled objects / binaries / libraries ──────────────────────
 *.o
 *.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
+*.a
+*.lib
 *.so
 *.dylib
 *.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
 *.exe
-*.out
-*.app
+# Project targets (if ever built in-source)
+app
+test_calculator
+test_calculator_service
+test_service_log
+test_gui_service
+
+# ── Editor / IDE ─────────────────────────────────────────────────
+.vscode/
+.idea/
+.vs/
+*.swp
+.cache/
+
+# ── OS cruft ─────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
