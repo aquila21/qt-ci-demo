@@ -1,7 +1,0 @@
-# Build-Kontext schlank halten und Versehen vermeiden
-.git
-build/
-results/
-*.user
-*.tmp
-.vscode/

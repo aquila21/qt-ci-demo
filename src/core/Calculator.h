@@ -1,5 +1,5 @@
 #pragma once
-
+// Domain primitive: pure arithmetic. No Qt, no I/O.
 class Calculator {
 public:
     double add(double a, double b);

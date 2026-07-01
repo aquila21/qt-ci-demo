@@ -1,152 +1,117 @@
-# Qt CI Demo
+# qt-ci-demo — hexagonal skeleton with a unit + integration test strategy
 
-Proof of concept for an automated CI/CD toolchain for a Qt 6 application:
-**code → build → unit test → machine-readable report → CI**, reproducible across
-multiple environments. The POC deliberately validates only the **skeleton** of the
-toolchain, not the actual product core.
+A small Qt/C++ project that demonstrates a **hexagonal (ports & adapters)**
+architecture with a clean **unit / integration** test split and a staged
+CI pipeline. The arithmetic `Calculator` is a deliberate **placeholder** for a
+real domain core (e.g. a sensor/detection pipeline); the point of the repo is the
+*structure and test strategy*, not the maths.
 
----
+![Architecture](docs/architecture.svg)
 
-## What the POC demonstrates
+## Idea in one sentence
 
-- Reproducible build of the same source on Windows/MSVC and Debian/GCC.
-- Automated unit tests (Qt Test) with **JUnit XML** output for Jenkins.
-- Pipeline-as-code (Jenkinsfile), end to end from checkout to report.
-- Pinned, reproducible build environment (Docker) as the basis for later evidence.
+A **Qt-free domain core** sits in the middle; everything else plugs into it
+through **ports** (interfaces the core owns), so the core can be exercised with
+no GUI and no hardware attached — which is what makes fast, reliable tests
+possible.
 
-Clean layering: the business logic (`Calculator`) is independent of the GUI
-(`MainWindow`) and therefore testable in isolation.
+## Architecture
 
----
+- **Core** (`src/core/`) — `Calculator` (pure primitive) and `CalculatorService`
+  (the use case). Compiled as a library that links **no Qt**; the independence is
+  enforced by the compiler, not by convention.
+- **Ports** (`src/ports/`)
+  - `ICalculatorService` — *inbound* port; the use case the outside world drives.
+  - `ICalculationLog` — *outbound* port; something the core needs from outside.
+    (In the real product this becomes `ISensorSource` / `IResultSink`.)
+- **Adapters** (`src/adapters/`)
+  - *Driving:* `MainWindow` (Qt GUI). *(In tests: a hand-written `StubService`.)*
+  - *Driven:* `StdoutCalculationLog` (app), `InMemoryCalculationLog` (tests).
+    *(In tests: a GoogleMock `MockCalculationLog`.)*
+- **Composition root** (`src/main.cpp`) — the only place that picks concrete
+  adapters and wires them into the core.
 
-## Project structure
+**Dependency rule:** dependencies point *inward*, toward the core. The core
+depends on nothing outside itself.
 
-```
-qt-ci-demo/
-├── CMakeLists.txt          # Build: targets QtCiDemo (app) and UnitTests (test runner)
-├── Dockerfile              # Reproducible Debian build/test environment
-├── Jenkinsfile             # CI pipeline (build & test in Docker, JUnit report)
-├── .dockerignore           # Keeps .git/build/results out of the build context
-├── src/
-│   ├── main.cpp            # Entry point
-│   ├── MainWindow.h/.cpp   # GUI layer (Qt Widgets)
-│   └── Calculator.h/.cpp   # Business logic (UI-independent)
-└── tests/
-    └── test_calculator.cpp # Qt Test unit tests (incl. divide-by-zero)
-```
+## Layout
 
----
+    src/
+      core/      Calculator, CalculatorService        (pure C++17, NO Qt)
+      ports/     ICalculatorService (inbound)
+                 ICalculationLog    (outbound) + Calculation
+      adapters/  InMemoryCalculationLog, StdoutCalculationLog   (driven)
+                 gui/MainWindow                                 (driving)
+      main.cpp   composition root
+    tests/
+      unit/          test_calculator, test_calculator_service
+      integration/   test_service_log, test_gui_service
+      mocks/         MockCalculationLog (GoogleMock)
+    docs/            architecture.svg
 
-## Prerequisites
+## Requirements
 
-- CMake ≥ 3.20, Ninja, a C++17 compiler
-- Qt 6 (components `Widgets` and `Test`)
-- For the container path: Docker
+- CMake ≥ 3.20, Ninja (or another generator), a C++17 compiler
+- Qt 6 (`Widgets`, `Test`)
+- Network access at configure time (GoogleTest is fetched via `FetchContent`),
+  or vendor GoogleTest for an offline/hermetic build
 
-> **Version note:** Debian/Ubuntu `apt` installs Qt **6.4.2** — this is **not** the
-> shipping version (6.11.x). For production-like builds, align the Qt version
-> deliberately (see [Limitations & outlook](#limitations--outlook)).
+## Build
 
----
+    cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+    cmake --build build
 
-## Build & test locally
+## Test
 
-```bash
-cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-cmake --build build
+The suite is split by level so CI can run fast tests first.
 
-# Run tests, write JUnit XML, and also log to stdout.
-# QT_QPA_PLATFORM=offscreen allows running without a display.
-mkdir -p results
-QT_QPA_PLATFORM=offscreen ./build/UnitTests -o results/unit.xml,junitxml -o -,txt
-```
+    ctest --test-dir build                 # everything
+    ctest --test-dir build -L unit         # fast gate (no display, no Qt)
+    ctest --test-dir build -L integration  # components wired across ports
 
-Alternatively via CTest:
+| Test | Level | Framework | Wires together |
+|------|-------|-----------|----------------|
+| `test_calculator`          | unit        | GoogleTest            | `Calculator` (pure) |
+| `test_calculator_service`  | unit        | GoogleTest + GoogleMock | `CalculatorService` + `MockCalculationLog` |
+| `test_service_log`         | integration | GoogleTest            | `CalculatorService` + `InMemoryCalculationLog` |
+| `test_gui_service`         | integration | Qt Test               | `MainWindow` + `StubService` (headless / offscreen) |
 
-```bash
-ctest --test-dir build --output-on-failure
-```
+**Why two frameworks?** The core and its tests are kept **Qt-free** by testing
+them with GoogleTest/GoogleMock, so they build and run on a bare (or cross-)
+toolchain. **Qt Test** is used only for `test_gui_service`, which genuinely needs
+the Qt event loop, `QTest` input simulation, and the `offscreen` platform.
 
-Expected result: `Totals: 7 passed, 0 failed`.
+## CI/CD
 
----
+- `Dockerfile` builds the project (fetching + hash-checking GoogleTest) and runs
+  the suite, emitting a JUnit report via `ctest --output-junit`.
+- `Jenkinsfile` runs **staged, fail-fast**: build image → unit tests → integration
+  tests, publishing JUnit after each stage.
 
-## Build & test with Docker
+## Reproducibility notes
 
-```bash
-# Build the image
-docker build -t qt-ci-demo .
+- **GoogleTest is pinned** (`v1.15.2`) with a SHA256 `URL_HASH` in `CMakeLists.txt`.
+- **Qt version:** Debian Bookworm ships Qt **6.4.2**, which is *not* the shipping
+  version (**6.11.x**). For certifiable/reproducible builds, pin package versions
+  or install the target Qt via `aqtinstall`, and pin the Docker base image by
+  digest (see comments in `Dockerfile`).
 
-# Run the tests and extract the results
-docker run --name qt-ci qt-ci-demo || true
-docker cp qt-ci:/app/results ./results
-docker rm -f qt-ci
-```
+## Mapping to the real product
 
-For a **reproducible** build, pin the base image by digest
-(recommended for certification-grade evidence):
+This skeleton is intentionally tiny. To grow it into the real system:
 
-```bash
-docker pull debian:bookworm-slim
-docker inspect --format='{{index .RepoDigests 0}}' debian:bookworm-slim
-docker build --build-arg BASE_IMAGE=debian:bookworm-slim@sha256:<DIGEST> -t qt-ci-demo .
-```
+- `Calculator` / `CalculatorService` → the real **detection core**.
+- `ICalculatorService` → `IDetectionService` (inbound).
+- `ICalculationLog` → split into `ISensorSource` (inbound data) and
+  `IResultSink` (outbound results).
+- Add **contract tests**: one parametrized suite that both a fake/mock adapter
+  *and* the real adapter must pass, so test doubles can't drift from reality.
+- Add the higher tiers: accuracy-regression on versioned datasets, and
+  hardware-in-the-loop, run nightly/pre-release.
 
----
+## Licensing (test tooling)
 
-## CI: Jenkins pipeline
-
-The `Jenkinsfile` defines:
-
-1. **Checkout** – source from SCM.
-2. **Build & Test in Docker** – build the image, run the tests in the container,
-   extract the JUnit XML via `docker cp`.
-3. **post.always** – publish results with the `junit` step (trend/history) and
-   clean up container/image.
-
-Properties:
-
-- Unique image tag per build (`qt-ci-demo:${BUILD_NUMBER}`) → no collisions on parallel runs.
-- `timeout` and `buildDiscarder` guard against hanging builds and unbounded history.
-- Optional local auto-trigger via `pollSCM` (commented out) — a GitHub webhook belongs
-  to the centrally hosted production environment.
-
-> **Build status:** if tests fail, the `junit` step marks the build **UNSTABLE (yellow)**
-> by default, not FAILED (red). A compile/Docker error results in FAILED.
-
----
-
-## Test-level coverage
-
-| Test level | POC status |
-|---|---|
-| Unit (C++) | ✅ Qt Test, 7 tests incl. divide-by-zero |
-| Component/integration | ⚠️ build integration only |
-| GUI | ❌ GUI exists but is untested |
-| Algorithm/AI detection | ❌ `Calculator` is a placeholder |
-| System/E2E, hardware-in-the-loop | ❌ |
-| Non-functional (performance/security) | ❌ |
-
----
-
-## Limitations & outlook
-
-The POC proves the automation **skeleton** holds. For a production-ready, certifiable
-toolchain, the following must be added:
-
-- **Align the build to the shipping Qt version** (e.g. via `aqtinstall`) and fully pin
-  package versions / base image.
-- **Requirements traceability** (e.g. Xray in Jira): requirement ↔ test ↔ execution ↔ defect.
-- **Real GUI regression** (e.g. Squish) on an agent with a display/`xvfb`.
-- **Code coverage** (gcov/lcov or Coco) and **static analysis/security** (clang-tidy, SAST/DAST, SBOM).
-- **Central operation**: hosted Jenkins (server/VM), configuration as code, backups,
-  dedicated/rootless build agents — the mounted host `docker.sock` is acceptable only
-  for the local POC, **not production-ready**.
-- **Actual product core**: an algorithm/AI detection test harness with versioned,
-  frozen datasets.
-
----
-
-## Status
-
-POC — runs locally, not intended for production.
+Test frameworks are build/test-time only and do not ship in the application
+binary. GoogleTest/GoogleMock are **BSD-3-Clause** (permissive, production-safe);
+Qt Test is part of Qt (used here under your existing Qt licensing). Confirm
+license obligations with whoever owns compliance — this is not legal advice.

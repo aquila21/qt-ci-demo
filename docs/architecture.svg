@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="716" viewBox="0 0 1060 716" role="img" aria-label="qt-ci-demo hexagonal skeleton with GoogleTest and GoogleMock">
+  <title>qt-ci-demo — hexagonal skeleton (GoogleTest + GoogleMock, Qt Test only for GUI)</title>
+  <desc>A Qt-free domain core with inbound port ICalculatorService (driven by MainWindow and a StubService) and outbound port ICalculationLog (implemented by StdoutCalculationLog, InMemoryCalculationLog, and a GoogleMock MockCalculationLog). Three headless tests use GoogleTest/GoogleMock; only the GUI test uses Qt Test.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#5f5e5a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text { font-family: 'Helvetica Neue', Arial, sans-serif; }
+      .h1 { font-size: 22px; font-weight: 600; fill: #262624; }
+      .sub { font-size: 13px; fill: #5f5e5a; }
+      .col { font-size: 13px; font-weight: 600; fill: #444441; }
+      .ib { font-size: 12px; font-weight: 600; }
+      .tag { font-size: 10px; }
+      .pt { font-size: 12px; font-weight: 600; fill: #444441; }
+      .ps { font-size: 9.5px; fill: #444441; }
+      .ct { font-size: 15px; font-weight: 600; fill: #0C447C; }
+      .cs { font-size: 11px; fill: #185FA5; }
+      .leg { font-size: 12px; fill: #444441; }
+      .conn { stroke: #5f5e5a; stroke-width: 1.4; fill: none; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1060" height="716" fill="#FFFFFF"/>
+
+  <text class="h1" x="40" y="38">Hexagonal skeleton — qt-ci-demo (GoogleTest + GoogleMock)</text>
+  <text class="sub" x="40" y="61">Core &amp; its tests are Qt-free (GoogleTest). Qt Test remains only for the GUI test. Test doubles are dashed.</text>
+
+  <!-- Legend -->
+  <g>
+    <rect x="40" y="78" width="15" height="15" rx="3" fill="#DCEAF9" stroke="#185FA5"/>
+    <text class="leg" x="61" y="90">Core (Qt-free)</text>
+    <rect x="180" y="78" width="15" height="15" rx="3" fill="#F1EFE8" stroke="#888780"/>
+    <text class="leg" x="201" y="90">Port (contract)</text>
+    <rect x="322" y="78" width="15" height="15" rx="3" fill="#E1F5EE" stroke="#0F6E56"/>
+    <text class="leg" x="343" y="90">Driving adapter</text>
+    <rect x="470" y="78" width="15" height="15" rx="3" fill="#EEEDFE" stroke="#534AB7"/>
+    <text class="leg" x="491" y="90">Driven adapter</text>
+    <rect x="612" y="78" width="15" height="15" rx="3" fill="#FAEEDA" stroke="#854F0B" stroke-dasharray="3 2"/>
+    <text class="leg" x="633" y="90">Test double</text>
+  </g>
+
+  <!-- Column headers -->
+  <text class="col" x="40" y="150">Driving (inbound) →</text>
+  <text class="col" x="1020" y="150" text-anchor="end">→ Driven (outbound)</text>
+
+  <!-- ============ CORE HEXAGON ============ -->
+  <polygon points="530,210 660,285 660,435 530,510 400,435 400,285" fill="#DCEAF9" stroke="#185FA5" stroke-width="2.5"/>
+  <text class="ct" x="530" y="260" text-anchor="middle">Domain core</text>
+  <text class="cs" x="530" y="278" text-anchor="middle">Qt-free library</text>
+  <rect x="442" y="296" width="176" height="42" rx="6" fill="#FFFFFF" stroke="#185FA5"/>
+  <text class="ib" x="530" y="313" text-anchor="middle" fill="#0C447C">CalculatorService</text>
+  <text class="tag" x="530" y="328" text-anchor="middle" fill="#185FA5">use case · orchestrates</text>
+  <rect x="465" y="352" width="130" height="38" rx="6" fill="#FFFFFF" stroke="#185FA5"/>
+  <text class="ib" x="530" y="368" text-anchor="middle" fill="#0C447C">Calculator</text>
+  <text class="tag" x="530" y="381" text-anchor="middle" fill="#185FA5">pure arithmetic</text>
+
+  <!-- ============ INBOUND PORT ============ -->
+  <rect x="258" y="337" width="150" height="46" rx="7" fill="#F1EFE8" stroke="#888780"/>
+  <text class="pt" x="333" y="356" text-anchor="middle">ICalculatorService</text>
+  <text class="ps" x="333" y="370" text-anchor="middle">inbound port</text>
+
+  <!-- ============ DRIVING ADAPTERS ============ -->
+  <rect x="40" y="286" width="176" height="50" rx="8" fill="#E1F5EE" stroke="#0F6E56"/>
+  <text class="ib" x="128" y="308" text-anchor="middle" fill="#04342C">MainWindow (Qt GUI)</text>
+  <text class="tag" x="128" y="324" text-anchor="middle" fill="#0F6E56">[app]</text>
+
+  <rect x="40" y="396" width="176" height="50" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-dasharray="5 3"/>
+  <text class="ib" x="128" y="418" text-anchor="middle" fill="#412402">StubService</text>
+  <text class="tag" x="128" y="434" text-anchor="middle" fill="#854F0B">hand-written · [test_gui_service]</text>
+
+  <line class="conn" x1="216" y1="311" x2="255" y2="350" marker-end="url(#arrow)"/>
+  <line class="conn" x1="216" y1="421" x2="255" y2="372" marker-end="url(#arrow)"/>
+
+  <!-- ============ OUTBOUND PORT ============ -->
+  <rect x="660" y="337" width="158" height="46" rx="7" fill="#F1EFE8" stroke="#888780"/>
+  <text class="pt" x="739" y="356" text-anchor="middle">ICalculationLog</text>
+  <text class="ps" x="739" y="370" text-anchor="middle">outbound port</text>
+
+  <!-- ============ DRIVEN ADAPTERS ============ -->
+  <rect x="850" y="278" width="184" height="48" rx="8" fill="#EEEDFE" stroke="#534AB7"/>
+  <text class="ib" x="942" y="299" text-anchor="middle" fill="#26215C">StdoutCalculationLog</text>
+  <text class="tag" x="942" y="315" text-anchor="middle" fill="#534AB7">[app]</text>
+
+  <rect x="850" y="336" width="184" height="48" rx="8" fill="#EEEDFE" stroke="#534AB7"/>
+  <text class="ib" x="942" y="357" text-anchor="middle" fill="#26215C">InMemoryCalculationLog</text>
+  <text class="tag" x="942" y="373" text-anchor="middle" fill="#534AB7">[test_service_log]</text>
+
+  <rect x="850" y="408" width="184" height="48" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-dasharray="5 3"/>
+  <text class="ib" x="942" y="429" text-anchor="middle" fill="#412402">MockCalculationLog</text>
+  <text class="tag" x="942" y="445" text-anchor="middle" fill="#854F0B">GoogleMock · [test_calculator_service]</text>
+
+  <line class="conn" x1="818" y1="330" x2="848" y2="302" marker-end="url(#arrow)"/>
+  <line class="conn" x1="818" y1="360" x2="848" y2="360" marker-end="url(#arrow)"/>
+  <line class="conn" x1="818" y1="392" x2="848" y2="432" marker-end="url(#arrow)"/>
+
+  <!-- ============ COMPOSITION ROOT ============ -->
+  <rect x="40" y="528" width="994" height="44" rx="10" fill="#E8F2E2" stroke="#4C7A2F"/>
+  <text class="ib" x="537" y="555" text-anchor="middle" fill="#2f4f1c">Composition root — main.cpp wires  StdoutCalculationLog → CalculatorService → MainWindow</text>
+
+  <!-- ============ TEST WIRING ============ -->
+  <text class="col" x="40" y="600">Test wiring &amp; framework</text>
+
+  <!-- card 1: UNIT / GoogleTest -->
+  <rect x="40" y="612" width="497" height="42" rx="8" fill="#E4F3E4" stroke="#2E7D32"/>
+  <rect x="52" y="622" width="46" height="20" rx="4" fill="#2E7D32"/>
+  <text x="75" y="636" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF">UNIT</text>
+  <text x="108" y="629" font-size="11.5" font-weight="600" fill="#1B5E20">test_calculator</text>
+  <text x="108" y="645" font-size="10.5" fill="#2E7D32">→ Calculator (pure primitive)</text>
+  <rect x="452" y="623" width="76" height="18" rx="4" fill="#EFEDE6" stroke="#B9B5A8"/>
+  <text x="490" y="636" text-anchor="middle" font-size="9.5" font-weight="600" fill="#55524a">GoogleTest</text>
+
+  <!-- card 2: UNIT / GoogleTest + Mock -->
+  <rect x="547" y="612" width="497" height="42" rx="8" fill="#E4F3E4" stroke="#2E7D32"/>
+  <rect x="559" y="622" width="46" height="20" rx="4" fill="#2E7D32"/>
+  <text x="582" y="636" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF">UNIT</text>
+  <text x="615" y="629" font-size="11.5" font-weight="600" fill="#1B5E20">test_calculator_service</text>
+  <text x="615" y="645" font-size="10.5" fill="#2E7D32">→ CalculatorService + MockCalculationLog</text>
+  <rect x="947" y="623" width="86" height="18" rx="4" fill="#EFEDE6" stroke="#B9B5A8"/>
+  <text x="990" y="636" text-anchor="middle" font-size="9.5" font-weight="600" fill="#55524a">GTest + GMock</text>
+
+  <!-- card 3: INTEG / GoogleTest -->
+  <rect x="40" y="660" width="497" height="42" rx="8" fill="#FBEBDD" stroke="#B5561A"/>
+  <rect x="52" y="670" width="52" height="20" rx="4" fill="#B5561A"/>
+  <text x="78" y="684" text-anchor="middle" font-size="10.5" font-weight="700" fill="#FFFFFF">INTEG</text>
+  <text x="114" y="677" font-size="11.5" font-weight="600" fill="#6E3311">test_service_log</text>
+  <text x="114" y="693" font-size="10.5" fill="#B5561A">→ CalculatorService + InMemoryCalculationLog</text>
+  <rect x="452" y="671" width="76" height="18" rx="4" fill="#EFEDE6" stroke="#B9B5A8"/>
+  <text x="490" y="684" text-anchor="middle" font-size="9.5" font-weight="600" fill="#55524a">GoogleTest</text>
+
+  <!-- card 4: INTEG / Qt Test -->
+  <rect x="547" y="660" width="497" height="42" rx="8" fill="#FBEBDD" stroke="#B5561A"/>
+  <rect x="559" y="670" width="52" height="20" rx="4" fill="#B5561A"/>
+  <text x="585" y="684" text-anchor="middle" font-size="10.5" font-weight="700" fill="#FFFFFF">INTEG</text>
+  <text x="621" y="677" font-size="11.5" font-weight="600" fill="#6E3311">test_gui_service</text>
+  <text x="621" y="693" font-size="10.5" fill="#B5561A">→ MainWindow + StubService (offscreen)</text>
+  <rect x="947" y="671" width="76" height="18" rx="4" fill="#FBEBDD" stroke="#B5561A"/>
+  <text x="985" y="684" text-anchor="middle" font-size="9.5" font-weight="700" fill="#6E3311">Qt Test</text>
+</svg>

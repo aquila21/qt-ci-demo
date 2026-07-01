@@ -1,50 +1,35 @@
-# ── Build output (CMake / Ninja) ─────────────────────────────────
-build/
-out/
-cmake-build-*/
-CMakeCache.txt
-CMakeFiles/
-cmake_install.cmake
-CTestTestfile.cmake
-*.cmake.stamp
-Testing/
+### C++ ###
+# Prerequisites
+*.d
 
-# ── Test results / reports ───────────────────────────────────────
-results/
-*.xml.bak
-coverage/
-*.gcda
-*.gcno
-*.gcov
-lcov.info
-
-# ── Qt-generated files ───────────────────────────────────────────
-# moc/uic/rcc artifacts and Qt Creator user settings
-moc_*.cpp
-ui_*.h
-qrc_*.cpp
-*.moc
-*.user
-*.autosave
-
-# ── Compiled objects / binaries / libraries ──────────────────────
+# Compiled Object files
+*.slo
+*.lo
 *.o
 *.obj
-*.a
-*.lib
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
 *.so
 *.dylib
 *.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
 *.exe
-QtCiDemo
-UnitTests
+*.out
+*.app
 
-# ── Editor / IDE ─────────────────────────────────────────────────
-.vscode/
-.idea/
-*.swp
-.cache/
-
-# ── OS cruft ─────────────────────────────────────────────────────
-.DS_Store
-Thumbs.db
+# End of https://www.toptal.com/developers/gitignore/api/c++
