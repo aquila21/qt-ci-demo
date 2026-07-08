@@ -13,7 +13,7 @@ pipeline {
         // Fast gate first: unit tests must pass before we spend time on integration.
         stage('Unit tests') {
             steps {
-                sh 'rm -rf /shared-results && mkdir -p /shared-results'
+                sh 'rm -rf /shared-results/*'
                 sh 'docker run --rm -v /shared-results:/app/results $IMG sh -c \
                     "ctest --test-dir build -L unit --output-on-failure \
                     --output-junit /app/results/unit.xml"'
