@@ -13,21 +13,20 @@ pipeline {
         // Fast gate first: unit tests must pass before we spend time on integration.
         stage('Unit tests') {
             steps {
-                sh 'rm -rf results && mkdir -p results'
-                sh 'docker run --rm -v $PWD/results:/app/results $IMG sh -c \
-                      "ctest --test-dir build -L unit --output-on-failure \
-                       --output-junit /app/results/unit.xml"'
+                sh 'rm -rf /shared-results && mkdir -p /shared-results'
+                sh 'docker run --rm -v /shared-results:/app/results $IMG sh -c \
+                    "ctest --test-dir build -L unit --output-on-failure \
+                    --output-junit /app/results/unit.xml"'
             }
-            post { always { junit 'results/unit.xml' } }
+            post { always { junit '/shared-results/unit.xml' } }
         }
-
         stage('Integration tests') {
             steps {
-                sh 'docker run --rm -v $PWD/results:/app/results $IMG sh -c \
-                      "ctest --test-dir build -L integration --output-on-failure \
-                       --output-junit /app/results/integration.xml"'
+                sh 'docker run --rm -v /shared-results:/app/results $IMG sh -c \
+                    "ctest --test-dir build -L integration --output-on-failure \
+                    --output-junit /app/results/integration.xml"'
             }
-            post { always { junit 'results/integration.xml' } }
+            post { always { junit '/shared-results/integration.xml' } }
         }
     }
     post { always { sh 'docker rmi $IMG || true' } }
