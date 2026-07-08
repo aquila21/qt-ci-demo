@@ -1,21 +1,24 @@
 ---
-description: Engineering sovereignty guardrails - always apply
+description: Engineering guardrails — always apply
 alwaysApply: true
 ---
 
 # Guardrails
 
-- For any new feature or non-trivial change: propose the interface/plan
-  first. Wait for explicit approval before writing the implementation.
-- Before any multi-file change: create a git checkpoint
-  (git commit -m "checkpoint: before <task>").
-- Never assume a package, symbol, or API exists from training familiarity
-  alone - verify it against the actual codebase or package manifest first.
-- Keep changes scoped to what was asked. If a broader refactor seems
-  warranted, propose it separately rather than bundling it in.
-- When explaining a change, state the WHY (the problem and the tradeoff),
-  not just a restatement of the diff.
-- Respect existing architectural boundaries (e.g. ports & adapters layering)
-  without being told each time. If a request seems to require crossing one
-  (e.g. having the domain core depend on a GUI or driven-adapter type),
-  stop and ask instead of silently doing it.
+## Accuracy
+- Prefer verified repo facts over guesses. If you haven't read it, say so.
+- Never invent APIs, symbols, or file paths — verify first (Read/Grep/manifest).
+- If scope or requirements are unclear, ask before planning.
+
+## Plan before implement (MANDATORY)
+- A feature request ("add X", "fix Y") is NOT approval.
+- Post **Plan (awaiting approval)**: goal, files, API, tests, out of scope. Then STOP — no edits same turn.
+- Implement only after explicit approval ("go ahead", "approved", "LGTM").
+
+## Scope & architecture
+- Keep changes scoped; propose broader refactors separately.
+- Respect ports/adapters boundaries; stop and ask if a change crosses layers.
+- Explain WHY, not just the diff.
+
+## Checkpoints
+- After approval, before multi-file edits: ask whether to create a checkpoint commit unless user already said to.
