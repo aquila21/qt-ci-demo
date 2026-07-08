@@ -1,8 +1,4 @@
-#pragma once
-#include <vector>
-#include "ports/ICalculationLog.h"
-// Real driven adapter used by integration tests (and usable in-app).
-// Captures every Calculation so a test can assert what crossed the port.
+// InMemoryCalculationLog.h — real adapter used by integration tests
 class InMemoryCalculationLog : public ICalculationLog {
 public:
     void record(const Calculation& c) override { m_entries.push_back(c); }

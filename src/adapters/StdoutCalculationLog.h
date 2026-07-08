@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "ports/ICalculationLog.h"
+
 // Real driven adapter wired into the running application.
 class StdoutCalculationLog : public ICalculationLog {
 public:
