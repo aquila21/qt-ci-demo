@@ -14,7 +14,7 @@ pipeline {
         stage('Unit tests') {
             steps {
                 sh 'rm -rf /shared-results/*'
-                sh 'docker run --rm -v /shared-results:/app/results $IMG sh -c \
+                sh 'docker run --rm -v "$HOST_RESULTS_DIR:/app/results" $IMG sh -c \
                     "ctest --test-dir build -L unit --output-on-failure \
                     --output-junit /app/results/unit.xml"'
             }
@@ -22,7 +22,7 @@ pipeline {
         }
         stage('Integration tests') {
             steps {
-                sh 'docker run --rm -v /shared-results:/app/results $IMG sh -c \
+                sh 'docker run --rm -v "$HOST_RESULTS_DIR:/app/results" $IMG sh -c \
                     "ctest --test-dir build -L integration --output-on-failure \
                     --output-junit /app/results/integration.xml"'
             }
