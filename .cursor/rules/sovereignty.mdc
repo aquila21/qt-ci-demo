@@ -1,0 +1,21 @@
+---
+description: Engineering sovereignty guardrails - always apply
+alwaysApply: true
+---
+
+# Guardrails
+
+- For any new feature or non-trivial change: propose the interface/plan
+  first. Wait for explicit approval before writing the implementation.
+- Before any multi-file change: create a git checkpoint
+  (git commit -m "checkpoint: before <task>").
+- Never assume a package, symbol, or API exists from training familiarity
+  alone - verify it against the actual codebase or package manifest first.
+- Keep changes scoped to what was asked. If a broader refactor seems
+  warranted, propose it separately rather than bundling it in.
+- When explaining a change, state the WHY (the problem and the tradeoff),
+  not just a restatement of the diff.
+- Respect existing architectural boundaries (e.g. ports & adapters layering)
+  without being told each time. If a request seems to require crossing one
+  (e.g. having the domain core depend on a GUI or driven-adapter type),
+  stop and ask instead of silently doing it.

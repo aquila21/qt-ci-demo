@@ -11,6 +11,7 @@ public:
     double lastA = 0, lastB = 0;
     double toReturn = 0;
     double add(double a, double b) override { lastA = a; lastB = b; return toReturn; }
+    double subtract(double a, double b) override { (void)a; (void)b; return 0; }
 };
 
 // INTEGRATION: the GUI driving adapter wired to the inbound port, run HEADLESS

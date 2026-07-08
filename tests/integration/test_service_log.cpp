@@ -14,3 +14,18 @@ TEST(ServiceLogIntegration, ComputesAndPersistsAcrossPort) {
     EXPECT_DOUBLE_EQ(log.entries().at(0).result, 15.0);
     EXPECT_DOUBLE_EQ(log.entries().at(1).result, 2.0);
 }
+
+TEST(ServiceLogIntegration, SubtractLogsOperationThroughPort) {
+    InMemoryCalculationLog log;
+    CalculatorService      svc(log);
+
+    const double result = svc.subtract(10, 4);
+
+    ASSERT_EQ(log.entries().size(), 1u);
+    const Calculation& entry = log.entries().front();
+    EXPECT_EQ(entry.op, "subtract");
+    EXPECT_DOUBLE_EQ(entry.a, 10.0);
+    EXPECT_DOUBLE_EQ(entry.b, 4.0);
+    EXPECT_DOUBLE_EQ(entry.result, 6.0);
+    EXPECT_DOUBLE_EQ(result, 6.0);
+}
