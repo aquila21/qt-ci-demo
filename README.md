@@ -91,12 +91,32 @@ them with GoogleTest/GoogleMock, so they build and run on a bare (or cross-)
 toolchain. **Qt Test** is used only for `test_gui_service`, which genuinely needs
 the Qt event loop, `QTest` input simulation, and the `offscreen` platform.
 
+## Reproducibility in Linux docker
+
+Build and run it:
+
+    docker build -t qt-ci-demo:local .
+    docker run --rm -v "$PWD/results:/app/results" qt-ci-demo:local
+    cat results/tests.xml   # JUnit XML — one artifact, multiple downstream consumers
+
 ## CI/CD
 
 - `Dockerfile` builds the project (fetching + hash-checking GoogleTest) and runs
   the suite, emitting a JUnit report via `ctest --output-junit`.
 - `Jenkinsfile` runs **staged, fail-fast**: build image → unit tests → integration
-  tests, publishing JUnit after each stage.
+  tests, publishing JUnit after each stage. A unit-test failure stops the
+  pipeline before the slower integration stage runs.
+- `Jenkinsfile`'s test stages write results to `${HOST_RESULTS_DIR:-$PWD/results}`
+  — on a normal CI agent (nothing special set), this defaults to a
+  workspace-relative `results/` folder, matching the `docker run` command above.
+  `HOST_RESULTS_DIR` only needs to be set explicitly in one specific scenario:
+  running Jenkins itself inside Docker on a machine where the Jenkins
+  container talks to the *host's* Docker engine over a mounted socket
+  ("Docker-outside-of-Docker"), because in that setup the inner `docker run`
+  call is executed by the host engine, which needs a *host-native* path, not a
+  path meaningful only inside the Jenkins container. See
+  `docs/jenkins-local-setup.md` for that specific local-sandbox setup and why
+  the override is needed there.
 
 ## Reproducibility notes
 
